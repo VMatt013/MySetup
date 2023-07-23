@@ -1,0 +1,2 @@
+# MySetup
+My AwesomeWM config
