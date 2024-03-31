@@ -10,6 +10,8 @@ cp -r .config /home/matt/.config
 cp -r chili /usr/share/sddm/themes/chili
 cp sddm.conf /usr/lib/sddm/sddm.conf.d/sddm.conf
 
+mkdir /home/matt/Documents
+cp -r wallpapers /home/matt/wallpapers
 
 curl -fsSL https://ppa.ablaze.one/KEY.gpg | gpg --dearmor -o /usr/share/keyrings/Floorp.gpg
 curl -sS --compressed -o /etc/apt/sources.list.d/Floorp.list 'https://ppa.ablaze.one/Floorp.list'
