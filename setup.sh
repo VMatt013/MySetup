@@ -7,6 +7,7 @@ mkdir /usr/share/xsessions/
 cp awesome.desktop /usr/share/xsessions/awesome.desktop
 mdkir /boot/grub /boot/grub/themes /boot/grub/themes/hyperfluent
 cp -r hyperfluent /boot/grub/themes/hyperfluent
+cp grub /etc/default/grub
 
 cp -r .config /home/matt/.config
 
