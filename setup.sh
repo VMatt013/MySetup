@@ -5,6 +5,7 @@ apt-get --assume-yes build-dep awesome
 
 mkdir /usr/share/xsessions/
 cp awesome.desktop /usr/share/xsessions/awesome.desktop
+cp -r hyperfluent /boot/grub/themes/hyperfluent
 
 cp -r .config /home/matt/.config
 
@@ -43,5 +44,7 @@ git clone https://github.com/horst3180/arc-icon-theme --depth 1 && cd arc-icon-t
 make install
 cd /home/matt
 rm -r arc-icon-theme
+
+sudo update-grub
 
 /sbin/reboot
