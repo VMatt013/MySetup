@@ -5,6 +5,7 @@ apt-get --assume-yes build-dep awesome
 
 mkdir /usr/share/xsessions/
 cp awesome.desktop /usr/share/xsessions/awesome.desktop
+mdkir /boot/grub /boot/grub/themes /boot/grub/themes/hyperfluent
 cp -r hyperfluent /boot/grub/themes/hyperfluent
 
 cp -r .config /home/matt/.config
