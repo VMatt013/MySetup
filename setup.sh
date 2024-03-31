@@ -27,6 +27,8 @@ rm -f packages.microsoft.gpg
 apt-get --assume-yes update
 apt-get --assume-yes install code
 
+cd /home/matt
+
 git clone https://github.com/awesomewm/awesome
 
 cd awesome
