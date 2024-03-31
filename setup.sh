@@ -8,7 +8,7 @@ cp awesome.desktop /usr/share/xsessions/awesome.desktop
 
 cp -r .config /home/matt/.config
 cp -r chili /usr/share/sddm/themes/chili
-
+cp sddm.conf /usr/lib/sddm/sddm.conf.d/sddm.conf
 
 
 curl -fsSL https://ppa.ablaze.one/KEY.gpg | gpg --dearmor -o /usr/share/keyrings/Floorp.gpg
@@ -22,7 +22,6 @@ rm -f packages.microsoft.gpg
 apt-get --assume-yes update
 apt-get --assume-yes install code
 
-apt-get install
 git clone https://github.com/awesomewm/awesome
 
 cd awesome
@@ -31,5 +30,11 @@ cd build
 apt install ./*.deb
 cd /home/matt
 rm -r awesome
+
+git clone https://github.com/horst3180/arc-icon-theme --depth 1 && cd arc-icon-theme
+autogen.sh --prefix=/usr
+make install
+cd /home/matt
+rm -r arc-icon-theme
 
 /sbin/reboot
