@@ -7,7 +7,10 @@ mkdir /usr/share/xsessions/
 cp awesome.desktop /usr/share/xsessions/awesome.desktop
 
 cp -r .config /home/matt/.config
+
+mkdir /usr/share/sddm /usr/share/sddm/themes
 cp -r chili /usr/share/sddm/themes/chili
+mkdir /usr/lib/sddm /usr/lib/sddm/sddm.conf.d
 cp sddm.conf /usr/lib/sddm/sddm.conf.d/sddm.conf
 
 mkdir /home/matt/Documents
@@ -34,7 +37,7 @@ cd /home/matt
 rm -r awesome
 
 git clone https://github.com/horst3180/arc-icon-theme --depth 1 && cd arc-icon-theme
-autogen.sh --prefix=/usr
+./autogen.sh --prefix=/usr
 make install
 cd /home/matt
 rm -r arc-icon-theme
