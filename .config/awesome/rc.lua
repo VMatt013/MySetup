@@ -21,7 +21,6 @@ local logout_menu = require("widgets.logout-menu.logout-menu")
 local volume_widget = require("widgets.pactl.volume")
 local spotify_widget = require("widgets.spotify")
 -- local brightness_widget = require("widgets.brightness-widget.brightness")
---local tasklist = require("widgets.taglist")
 
 local my_systray = wibox.widget.systray({
 	bg = "ff0000",
@@ -253,7 +252,7 @@ awful.screen.connect_for_each_screen(function(s)
 
 	-- Create a tasklist widget
 	local dpi = beautiful.xresources.apply_dpi
-	awful.widget.tasklist({
+	local tasklist = awful.widget.tasklist({
 		screen = s,
 		filter = awful.widget.tasklist.filter.currenttags,
 		style = {
@@ -347,7 +346,7 @@ awful.screen.connect_for_each_screen(function(s)
 		margins = theme.bar.margins,
 		fg = theme.bar.fg,
 		bg = theme.bar.bg,
-		shape = theme.bar.shape,
+		shape = rounded(theme.dpi),
 		screen = s,
 		top = 10,
 	})
