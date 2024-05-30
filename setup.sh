@@ -48,5 +48,8 @@ cd /home/matt
 rm -r arc-icon-theme
 
 sudo update-grub
+curl -sS https://starship.rs/install.sh | sh
+echo 'set completion-ignore-case On' >>/etc/inputrc
 
 /sbin/reboot
+
