@@ -8,6 +8,11 @@ theme.colors = {
 	secondary = "#000000",
 	bg = "#ff888099",
 	border = "#000000",
+	taglist = {
+		selected = "#D1345B",
+		active = "#34D1BF",
+		inactive = "#efefef",
+	},
 }
 
 theme.dpi = 20

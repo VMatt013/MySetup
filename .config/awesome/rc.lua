@@ -15,35 +15,6 @@ require("awful.hotkeys_popup.keys")
 
 beautiful.notification_bg = "ff0000"
 
--- Widgets
-local battery_widget = require("widgets.battery-status.battery")
-local logout_menu = require("widgets.logout-menu.logout-menu")
-local volume_widget = require("widgets.pactl.volume")
-local spotify_widget = require("widgets.spotify")
--- local brightness_widget = require("widgets.brightness-widget.brightness")
-
-local my_systray = wibox.widget.systray({
-	bg = "ff0000",
-})
-
-local my_round_systray = wibox.widget({
-	{
-		wibox.widget.systray(),
-		left = 10,
-		top = 2,
-		bottom = 2,
-		right = 10,
-		widget = wibox.container.margin,
-	},
-	bg = "#ff0000",
-	shape = gears.shape.rounded_rect,
-	shape_clip = true,
-	widget = wibox.container.background,
-})
-
--- Load Debian menu entries
-local has_fdo, freedesktop = pcall(require, "freedesktop")
-
 local margin = wibox.container.margin
 
 -- Theme
@@ -101,15 +72,10 @@ end
 beautiful.init(gears.filesystem.get_themes_dir() .. "default/theme.lua")
 
 -- This is used later as the default terminal and editor to run.
-terminal = "x-terminal-emulator"
+terminal = "alacritty"
 editor = os.getenv("EDITOR") or "editor"
 editor_cmd = terminal .. " -e " .. editor
 
--- Default modkey.
--- Usually, Mod4 is the key with a logo between Control and Alt.
--- If you do not like this or do not have such a key,
--- I suggest you to remap Mod4 to another key using xmodmap or other tools.
--- However, you can use another modifier like Mod1, but it may interact with others.
 modkey = "Mod4"
 
 -- Table of layouts to cover with awful.layout.inc, order matters.
@@ -159,48 +125,7 @@ menubar.utils.terminal = terminal -- Set the terminal for applications that requ
 mykeyboardlayout = awful.widget.keyboardlayout()
 
 -- {{{ Wibar
--- Create a textclock widget
-mytextclock = wibox.widget.textclock()
-
--- Create a wibox for each screen and add it
-local taglist_buttons = gears.table.join(
-	awful.button({}, 1, function(t)
-		t:view_only()
-	end),
-	awful.button({ modkey }, 1, function(t)
-		if client.focus then
-			client.focus:move_to_tag(t)
-		end
-	end),
-	awful.button({}, 3, awful.tag.viewtoggle),
-	awful.button({ modkey }, 3, function(t)
-		if client.focus then
-			client.focus:toggle_tag(t)
-		end
-	end),
-	awful.button({}, 4, function(t)
-		awful.tag.viewnext(t.screen)
-	end),
-	awful.button({}, 5, function(t)
-		awful.tag.viewprev(t.screen)
-	end)
-)
-
-local tasklist_buttons = gears.table.join(
-	awful.button({}, 1, function(c)
-		if c == client.focus then
-			c.minimized = true
-		else
-			c:emit_signal("request::activate", "tasklist", { raise = true })
-		end
-	end),
-	awful.button({}, 4, function()
-		awful.client.focus.byidx(1)
-	end),
-	awful.button({}, 5, function()
-		awful.client.focus.byidx(-1)
-	end)
-)
+require("ui.bar")
 
 local function set_wallpaper(s)
 	-- Wallpaper
@@ -222,159 +147,8 @@ awful.screen.connect_for_each_screen(function(s)
 	set_wallpaper(s)
 
 	-- Each screen has its own tag table.
-	awful.tag({ "1", "2", "3" }, s, awful.layout.layouts[1])
 
 	-- Create a promptbox for each screen
-	s.mypromptbox = awful.widget.prompt()
-	-- Create an imagebox widget which will contain an icon indicating which layout we're using.
-	-- We need one layoutbox per screen.
-	s.mylayoutbox = awful.widget.layoutbox(s)
-	s.mylayoutbox:buttons(gears.table.join(
-		awful.button({}, 1, function()
-			awful.layout.inc(1)
-		end),
-		awful.button({}, 3, function()
-			awful.layout.inc(-1)
-		end),
-		awful.button({}, 4, function()
-			awful.layout.inc(1)
-		end),
-		awful.button({}, 5, function()
-			awful.layout.inc(-1)
-		end)
-	))
-	-- Create a taglist widget
-	s.mytaglist = awful.widget.taglist({
-		screen = s,
-		filter = awful.widget.taglist.filter.all,
-		buttons = taglist_buttons,
-	})
-
-	-- Create a tasklist widget
-	local dpi = beautiful.xresources.apply_dpi
-	local tasklist = awful.widget.tasklist({
-		screen = s,
-		filter = awful.widget.tasklist.filter.currenttags,
-		style = {
-			shape_border_width = 1,
-			shape_border_color = "#777777",
-			shape = rounded(),
-		},
-		-- sort clients by tags
-		source = function()
-			local ret = {}
-
-			for _, t in ipairs(s.tags) do
-				gears.table.merge(ret, t:clients())
-			end
-
-			return ret
-		end,
-		buttons = {
-			awful.button({}, 1, function(c)
-				if not c.active then
-					c:activate({
-						context = "through_dock",
-						switch_to_tag = true,
-					})
-				else
-					c.minimized = true
-				end
-			end),
-			awful.button({}, 4, function()
-				awful.client.focus.byidx(-1)
-			end),
-			awful.button({}, 5, function()
-				awful.client.focus.byidx(1)
-			end),
-		},
-		style = {
-			shape = gears.shape.circle,
-			shape_border_width = 1,
-			shape_border_color = "#777777",
-		},
-		layout = {
-			spacing = dpi(4),
-			layout = wibox.layout.fixed.horizontal,
-		},
-		widget_template = {
-			{
-				{
-					{
-						id = "icon_role",
-						widget = wibox.widget.imagebox,
-					},
-					--margins = dpi(2),
-					margins = dpi(6),
-					widget = wibox.container.margin,
-				},
-				--margins = dpi(2),
-				widget = wibox.container.margin,
-			},
-			id = "background_role",
-			--forced_height = 21,
-			--forced_width = 21,
-			widget = wibox.container.background,
-			create_callback = function(self, c, _, _)
-				self:connect_signal("mouse::enter", function()
-					awesome.emit_signal("bling::task_preview::visibility", s, true, c)
-				end)
-				self:connect_signal("mouse::leave", function()
-					awesome.emit_signal("bling::task_preview::visibility", s, false, c)
-				end)
-			end,
-		},
-		border_color = "#777777",
-		border_width = 2,
-		ontop = true,
-		placement = awful.placement.centered,
-		shape = rounded(),
-	})
-
-	s.mytasklist = awful.widget.tasklist({
-		screen = s,
-		filter = awful.widget.tasklist.filter.currenttags,
-		buttons = tasklist_buttons,
-	})
-
-	-- Create the wibox
-	s.mywibox = awful.wibar({
-		border_width = theme.bar.border_width,
-		border_color = theme.bar.border_color,
-		position = theme.bar.position,
-		height = theme.bar.height,
-		margins = theme.bar.margins,
-		fg = theme.bar.fg,
-		bg = theme.bar.bg,
-		shape = theme.bar.shape,
-		screen = s,
-		top = 10,
-	})
-
-	-- Add widgets to the wibox
-
-	s.mywibox:setup({
-		layout = wibox.layout.align.horizontal,
-		expand = "none",
-		{ -- Left widgets
-			layout = wibox.layout.fixed.horizontal,
-			margin(logout_menu(), 10, 10, 1, 1),
-			margin(s.mytaglist, 0, 10, 1, 1),
-			spotify_widget({ max_length = 40 }),
-			margin(s.mypromptbox, 0, 10, 1, 1),
-		},
-		--margin(tasklist,0,10,1,1), -- Middle widget
-		tasklist,
-		{ -- Right widgets
-			layout = wibox.layout.fixed.horizontal,
-			margin(my_systray, 0, 10, 1, 1),
-			margin(battery_widget(), 0, 10, 1, 1),
-			margin(volume_widget(), 0, 10, 1, 1),
-			--	margin(brightness_widget(), 0, 10, 1, 1),
-			margin(mytextclock, 0, 10, 1, 1),
-			--margin(s.mylayoutbox,0,10,1,1),
-		},
-	})
 end)
 -- }}}
 
