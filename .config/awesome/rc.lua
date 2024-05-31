@@ -346,7 +346,7 @@ awful.screen.connect_for_each_screen(function(s)
 		margins = theme.bar.margins,
 		fg = theme.bar.fg,
 		bg = theme.bar.bg,
-		shape = rounded(theme.dpi),
+		shape = theme.bar.shape,
 		screen = s,
 		top = 10,
 	})
