@@ -1,47 +1,52 @@
+-- theme.lua
+
 local theme = {}
 
-theme.colors = {
-	main = "#811d5888",
-	text = "#ffffff",
-	secondary = "#000000",
-	bg = "#ff888099",
-	border = "#000000",
-}
-theme.bar = {
-	border_width = 3,
-	border_color = theme.colors.border,
-	position = "top",
-	height = 25,
-	margins = {
-		top = 5,
-		bottom = 5,
-		left = 10,
-		right = 10,
-	},
-	opacity = 1,
-	bg = theme.colors.main,
-	fg = theme.colors.text,
-}
+-- Define colors
+theme.bg_normal = "#282c34"
+theme.bg_focus = "#3d3f4b"
+theme.bg_urgent = "#ff6c6b"
+theme.fg_normal = "#abb2bf"
+theme.fg_focus = "#ffffff"
+theme.fg_urgent = "#ffffff"
 
-theme.titlebar = {
-	size = 25,
-	bg_normal = theme.colors.main,
-	bg_focus = theme.colors.main,
-	h_margin = 15,
-	v_margin = 1,
-}
+-- Define font
+theme.font = "sans 10"
 
-theme.client = {
-	border_width = 3,
-	border_color = theme.colors.border,
-}
+-- Define border colors
+theme.border_normal = "#282c34"
+theme.border_focus = "#61afef"
+theme.border_marked = "#98c379"
 
-theme.dpi = 20
+-- Define taglist colors
+theme.taglist_fg_focus = "#61afef"
+theme.taglist_bg_focus = "#282c34"
+theme.taglist_fg_urgent = "#ff6c6b"
+theme.taglist_bg_urgent = "#282c34"
 
-theme.wallpapers = { "/home/matt/wallpapers/eclipse.jpg", "/home/matt/wallpapers/eva.jpg" }
+-- Define tasklist colors
+theme.tasklist_fg_focus = "#61afef"
+theme.tasklist_bg_focus = "#282c34"
+theme.tasklist_fg_urgent = "#ff6c6b"
+theme.tasklist_bg_urgent = "#282c34"
+theme.tasklist_fg_normal = "#34eb40"
+theme.tasklist_bg_normal = "#34eb40"
 
-theme.icons = { sound = { "󰖁 ", "󰕿 ", "󰖀 ", "󰕾 " } }
+-- Define titlebar colors
+theme.titlebar_bg = "#282c34"
+theme.titlebar_fg = "#61afef"
 
-theme.font = "Hack Nerd Font"
+-- Define menu colors
+theme.menu_bg_normal = "#282c34"
+theme.menu_fg_normal = "#abb2bf"
+theme.menu_bg_focus = "#3d3f4b"
+theme.menu_fg_focus = "#ffffff"
+
+-- Define hotkey help colors
+theme.hotkeys_bg = "#282c34"
+theme.hotkeys_fg = "#abb2bf"
+theme.hotkeys_border_color = "#61afef"
+theme.hotkeys_modifiers_fg = "#61afef"
+theme.hotkeys_group_margin = "20"
 
 return theme

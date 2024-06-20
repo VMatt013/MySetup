@@ -15,6 +15,14 @@ local beautiful = require("beautiful")
 local HOME = os.getenv("HOME")
 local ICON_DIR = HOME .. "/.config/awesome/widgets/logout-menu/icons/"
 
+local function toggle(parent)
+	if parent.visible then
+		parent.visible = false
+	else
+		parent.visible = true
+	end
+end
+
 local logout_menu_widget = wibox.widget({
 	{
 		{
@@ -38,6 +46,8 @@ local popup = awful.popup({
 	shape = function(cr, width, height)
 		gears.shape.rounded_rect(cr, width, height, 10)
 	end,
+
+	placement = awful.placement.centered,
 	border_width = 1,
 	border_color = beautiful.bg_focus,
 	maximum_width = 400,
@@ -130,7 +140,8 @@ local function worker(user_args)
 	popup:setup(rows)
 
 	logout_menu_widget:buttons(awful.util.table.join(awful.button({}, 1, function()
-		awful.spawn.with_shell("~/.config/awesome/widgets/logout-menu/rofi.sh")
+		--awful.spawn.with_shell("~/.config/awesome/widgets/logout-menu/rofi.sh")
+		toggle(popup)
 	end)))
 
 	return logout_menu_widget

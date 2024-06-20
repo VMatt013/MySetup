@@ -52,12 +52,6 @@ highlight Executable  cterm=bold ctermfg=119     ctermbg=default
 highlight Selected    cterm=bold ctermfg=213     ctermbg=default
 highlight CmpMismatch cterm=bold ctermfg=white   ctermbg=88
 
-"highlight GitModified cterm=bold ctermfg=yellow   ctermbg=88
-"highlight GitCommited cterm=bold ctermfg=green   ctermbg=88
-"highlight GitUnstaged cterm=bold ctermfg=red   ctermbg=88 
-
-
-
 " software documentation
 highlight {COPYRIGHT,COPYING*,BUGS,ChangeLog*,FAQ,INSTALL*,LICEN[CS]E,NEWS,
           \README*,AUTHORS,TODO,THANKS}

@@ -1,93 +1,80 @@
+-- tasklist.lua
+
 local awful = require("awful")
 local gears = require("gears")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
 
-local theme = require("theme.bar-test")
-local rounded = theme.rects.rounded
+local Debug = require("Debug")
 
-local dpi = beautiful.xresources.apply_dpi
+-- Mouse bindings for the tasklist
+local tasklist_buttons = gears.table.join(
+	awful.button({}, 1, function(c)
+		if c == client.focus then
+			c.minimized = true
+		else
+			c:emit_signal("request::activate", "tasklist", { raise = true })
+		end
+	end),
+	awful.button({}, 3, function()
+		awful.menu.client_list({ theme = { width = 250 } })
+	end),
+	awful.button({}, 4, function()
+		awful.client.focus.byidx(1)
+	end),
+	awful.button({}, 5, function()
+		awful.client.focus.byidx(-1)
+	end)
+)
 
-local create = function(s)
-	tasklist = awful.widget.tasklist({
+local function create(s, max_width)
+	local max_width = max_width or 300
+	local tasklist_widget = awful.widget.tasklist({
 		screen = s,
 		filter = awful.widget.tasklist.filter.currenttags,
+		buttons = tasklist_buttons,
 		style = {
-			shape_border_width = 1,
-			shape_border_color = "#777777",
-			shape = rounded(),
-		},
-		-- sort clients by tags
-		source = function()
-			local ret = {}
-
-			for _, t in ipairs(s.tags) do
-				gears.table.merge(ret, t:clients())
-			end
-
-			return ret
-		end,
-		buttons = {
-			awful.button({}, 1, function(c)
-				if not c.active then
-					c:activate({
-						context = "through_dock",
-						switch_to_tag = true,
-					})
-				else
-					c.minimized = true
-				end
-			end),
-			awful.button({}, 4, function()
-				awful.client.focus.byidx(-1)
-			end),
-			awful.button({}, 5, function()
-				awful.client.focus.byidx(1)
-			end),
-		},
-		style = {
-			shape = gears.shape.circle,
-			shape_border_width = 1,
-			shape_border_color = "#777777",
+			shape = gears.shape.rounded_bar,
 		},
 		layout = {
-			spacing = dpi(4),
-			layout = wibox.layout.fixed.horizontal,
+			spacing = 5,
+			layout = wibox.layout.flex.horizontal,
 		},
 		widget_template = {
 			{
 				{
 					{
-						id = "icon_role",
-						widget = wibox.widget.imagebox,
+						{
+							{
+								id = "clienticon",
+								widget = awful.widget.clienticon,
+							},
+							margins = 2,
+							widget = wibox.container.margin,
+						},
+						{
+							id = "text_role",
+							widget = wibox.widget.textbox,
+						},
+						layout = wibox.layout.fixed.horizontal,
 					},
-					margins = dpi(6),
+					left = 10,
+					right = 10,
 					widget = wibox.container.margin,
 				},
-				--margins = dpi(2),
-				widget = wibox.container.margin,
+				id = "background_role",
+				widget = wibox.container.background,
 			},
-			id = "background_role",
-			--forced_height = 21,
-			--forced_width = 21,
-			widget = wibox.container.background,
-			create_callback = function(self, c, _, _)
-				self:connect_signal("mouse::enter", function()
-					awesome.emit_signal("bling::task_preview::visibility", s, true, c)
-				end)
-				self:connect_signal("mouse::leave", function()
-					awesome.emit_signal("bling::task_preview::visibility", s, false, c)
-				end)
-			end,
+			widget = wibox.container.margin,
+			top = 2,
+			bottom = 2,
+			update_callback = function(self, c, index, clients) end,
 		},
-		border_color = "#777777",
-		border_width = 2,
-		ontop = true,
-		placement = awful.placement.centered,
-		shape = rounded(),
 	})
 
-	return tasklist
+	local tasklist_constraint = wibox.container.constraint(tasklist_widget, "max", max_width)
+
+	return tasklist_constraint
 end
 
 return create

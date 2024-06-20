@@ -10,7 +10,7 @@
 ""set lsoptions=transposed
 ""set number
 set viewcolumns=-80%{name}
-""set viewcolumns=-80%{name},10%{ext},{mtime}
+set viewcolumns=-80%{name},10%{ext},{mtime}
 ""set viewcolumns=-80%{name},10%{ext}
 set dotfiles
 set sort=+dir,+iname,-mode
@@ -56,7 +56,13 @@ set norunexec
 
 " Selected color scheme
 
-colorscheme catppuccin
+if $TERM == 'screen' 
+    colorscheme gruvbox
+else    
+    colorscheme catppuccin
+endif
+
+"colorscheme catppuccin
 "highlight Normal guibg=none
 
 " TIME_STAMP_FORMAT=%m/%d-%H:%M
@@ -108,6 +114,8 @@ mark h ~/
 mark d ~/Downloads
 " ------------------------------------------------------------------------------
 
+"COMMANDS
+
 " :com[mand][!] command_name action
 " The following macros can be used in a command
 " %a is replaced with the user arguments.
@@ -121,7 +129,7 @@ mark d ~/Downloads
 " %m run the command in a menu window
 
 command! df df -h %m 2> /dev/null
-command! diff vim -d %f %F
+command! diff nvim -d %f %F
 command! zip zip -r %f.zip %f
 command! run !! ./%f
 command! make !!make %a
@@ -130,8 +138,22 @@ command! vgrep vim "+grep %a"
 command! reload :write | restart
 command! mkd :mkdir %a
 command! mkf :touch %a
-command! cp :copy %c %D%a
 
+command! gadd git add %f
+command! greset git reset %f
+command! gcommit git commit -m %a
+command! gswitch git switch %a
+command! gstatus :setl previewprg='git status -s %d 2>&1' | :view!
+command! glog :setl previewprg='git log --color --oneline --all --graph %d 2>&1' | :view!
+command! gdiff :setl previewprg='git diff %d 2>&1' | :view!
+
+command! Gstatus git status | nvim -R
+command! Glog git log | nvim -R
+
+command! cc cp %c %a
+
+
+"au DirEnter '~/Documents/Git/**/*' setl previewprg='git status %d 2>&1'
 " ------------------------------------------------------------------------------
 
 " The file type is for the default programs to be used with
@@ -159,6 +181,17 @@ command! cp :copy %c %D%a
 "
 " You can also add %CLEAR if you want to clear screen before running FUSE
 " program.
+
+
+
+
+
+"filetype {*.git,.git},<git/git> git log %d | less
+
+
+
+"fileviewer {*.git},<git/git> git log %d 
+
 
 filextype *.pdf
         \ zathura %f
@@ -323,7 +356,6 @@ endif
 
 " Mappings for faster renaming
 nnoremap I cw<c-a>
-nnoremap cc cw<c-u>
 nnoremap A cw
 
 " q for quit
@@ -345,4 +377,3 @@ nnoremap <f5> :!less %f<cr>
 nnoremap <f4> :edit<cr>
 nnoremap <f6> :mkdir<space>
 nnoremap <f8> :delete<cr>
-

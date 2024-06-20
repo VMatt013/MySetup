@@ -8,9 +8,12 @@
 -- @copyright 2020 Pavel Makhov
 -------------------------------------------------
 
+local Debug = require("Debug")
 local awful = require("awful")
 local wibox = require("wibox")
+local gears = require("gears")
 local watch = require("awful.widget.watch")
+local beautiful = require("beautiful")
 
 local function ellipsize(text, length)
 	-- utf8 only available in Lua 5.3+
@@ -61,7 +64,6 @@ local function worker(user_args)
 				widget = wibox.widget.textbox,
 				font = font,
 				text = " ",
-				forced_height = 1,
 			},
 		},
 		{
@@ -163,6 +165,18 @@ local function worker(user_args)
 				.. cur_title
 		end)
 	end
+
+	local rounded_widget = wibox.widget({
+		{
+			spotify_widget,
+			left = 5,
+			right = 5,
+			widget = wibox.container.margin,
+		},
+		bg = beautiful.bg_normal,
+		shape = gears.shape.rounded_rect,
+		widget = wibox.container.background,
+	})
 
 	return spotify_widget
 end

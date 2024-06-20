@@ -13,28 +13,22 @@ local menubar = require("menubar")
 local hotkeys_popup = require("awful.hotkeys_popup")
 require("awful.hotkeys_popup.keys")
 
-beautiful.notification_bg = "ff0000"
+local Debug = require("Debug")
+
+local HOME = os.getenv("HOME")
+local DIR = HOME .. "/.config/awesome/"
+
+beautiful.init(DIR .. "theme/" .. "default/theme.lua")
+--beautiful.init("theme.main")
 
 local margin = wibox.container.margin
 
 -- Theme
 local theme = require("theme.bar-test")
 local colors = theme.colors
+local rounded = theme.rects.rounded
 
-local rounded = function(rad)
-	rad = rad or 5
-	return function(cr, width, height)
-		gears.shape.rounded_rect(cr, width, height, rad)
-	end
-end
-
-function setShape(c)
-	if c.fullscreen or c.maximized then
-		c.shape = gears.shape.rectangle
-	else
-		c.shape = rounded(theme.dpi)
-	end
-end
+local promptbox = require("widgets.promptbox")
 
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
@@ -69,7 +63,6 @@ end
 
 -- {{{ Variable definitions
 -- Themes define colours, icons, font and wallpapers.
-beautiful.init(gears.filesystem.get_themes_dir() .. "default/theme.lua")
 
 -- This is used later as the default terminal and editor to run.
 terminal = "alacritty"
@@ -87,45 +80,17 @@ awful.layout.layouts = {
 
 -- {{{ Menu
 -- Create a launcher widget and a main menu
-myawesomemenu = {
-	{
-		"hotkeys",
-		function()
-			hotkeys_popup.show_help(nil, awful.screen.focused())
-		end,
-	},
-	{ "manual", terminal .. " -e man awesome" },
-	{ "edit config", editor_cmd .. " " .. awesome.conffile },
-	{ "restart", awesome.restart },
-	{
-		"quit",
-		function()
-			awesome.quit()
-		end,
-	},
-}
-
-local menu_awesome = { "awesome", myawesomemenu, beautiful.awesome_icon }
-local menu_terminal = { "open terminal", terminal }
-
-if has_fdo then
-	mymainmenu = freedesktop.menu.build({
-		before = { menu_awesome },
-		after = { menu_terminal },
-	})
-end
-
-mylauncher = awful.widget.launcher({ image = beautiful.awesome_icon, menu = mymainmenu })
 
 -- Menubar configuration
 menubar.utils.terminal = terminal -- Set the terminal for applications that require it
 -- }}}
 
--- Keyboard map indicator and switcher
-mykeyboardlayout = awful.widget.keyboardlayout()
-
 -- {{{ Wibar
-require("ui.bar")
+
+local bar = require("ui.bar")
+--for k, v in pairs(awful.screen.object) do Debug(k, v) end
+
+Debug(_, _, screen._viewports(), 1)
 
 local function set_wallpaper(s)
 	-- Wallpaper
@@ -262,13 +227,13 @@ globalkeys = gears.table.join(
 
 	-- Prompt
 	awful.key({ modkey }, "r", function()
-		awful.screen.focused().mypromptbox:run()
+		awful.screen.focused().promptbox:run()
 	end, { description = "run prompt", group = "launcher" }),
 
 	awful.key({ modkey }, "x", function()
 		awful.prompt.run({
 			prompt = "Run Lua code: ",
-			textbox = awful.screen.focused().mypromptbox.widget,
+			textbox = awful.screen.focused().promptbox.widget,
 			exe_callback = awful.util.eval,
 			history_path = awful.util.get_cache_dir() .. "/history_eval",
 		})
@@ -386,13 +351,14 @@ awful.rules.rules = {
 	{
 		rule = {},
 		properties = {
-			border_width = theme.client.border_width,
-			border_color = theme.client.border_color,
+			border_width = beautiful.border_width,
+			border_color = beautiful.border_color_normal,
 			focus = awful.client.focus.filter,
 			raise = true,
 			keys = clientkeys,
 			buttons = clientbuttons,
 			screen = awful.screen.preferred,
+			shape = theme.rects.rounded(theme.dpi),
 			placement = awful.placement.no_overlap + awful.placement.no_offscreen,
 		},
 	},
@@ -442,11 +408,19 @@ awful.rules.rules = {
 -- }}}
 
 -- {{{ Signals
+
+function setShape(c)
+	if c.fullscreen or c.maximized then
+		c.shape = gears.shape.rectangle
+	else
+		c.shape = rounded(theme.dpi)
+	end
+end
 client.connect_signal("property::fullscreen", function(c)
 	setShape(c)
 end)
 client.connect_signal("property::maximized", function(c)
-	setShape(c)
+	--setShape(c)
 end)
 
 -- Signal function to execute when a new client appears.
@@ -459,8 +433,6 @@ client.connect_signal("manage", function(c)
 		-- Prevent clients from being unreachable after screen count changes.
 		awful.placement.no_offscreen(c)
 	end
-
-	setShape(c)
 end)
 
 -- Add a titlebar if titlebars_enabled is set to true in the rules.
@@ -522,6 +494,4 @@ client.connect_signal("unfocus", function(c)
 end)
 -- }}}
 
-beautiful.border_width = 0
-beautiful.useless_gap = 10
 awful.spawn.with_shell("~/.config/awesome/startup.sh")
