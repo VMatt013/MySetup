@@ -15,18 +15,19 @@ local wrapper = function(widget)
 			left = 5,
 			widget = wibox.container.margin,
 		},
+		id = "wrapper",
 		bg = beautiful.bg_normal,
 		shape = gears.shape.rounded_rect,
 		widget = wibox.container.background,
 		visible = true,
-		update_callback = function(self)
-			Debug(_, "test")
-		end,
-
-		set_visibility = function(self, is_visible)
-			self.visible = is_visible
-		end,
 	})
+
+	wrap:connect_signal("wrap::hide", function()
+		wrap:set_opacity(0)
+	end)
+	wrap:connect_signal("wrap::show", function()
+		wrap:set_opacity(1)
+	end)
 
 	--
 
@@ -38,7 +39,6 @@ local margin = function(widget, use_wrap, t, r, b, l)
 
 	if use_wrap then
 		widget = wrapper(widget)
-		widget:set_visibility(true)
 	end
 
 	local margin = wibox.widget({
@@ -53,6 +53,7 @@ local margin = function(widget, use_wrap, t, r, b, l)
 		bottom = b or 1,
 		left = l or 5,
 	})
+
 	return margin
 end
 

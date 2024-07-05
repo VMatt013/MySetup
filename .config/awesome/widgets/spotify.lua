@@ -111,6 +111,7 @@ local function worker(user_args)
 		if string.find(stdout, "Error: Spotify is not running.") ~= nil then
 			widget:set_text("", "")
 			widget:set_visible(false)
+			widget:emit_signal_recursive("wrap::hide")
 			return
 		end
 
@@ -125,6 +126,7 @@ local function worker(user_args)
 
 			widget:set_text(artist, title)
 			widget:set_visible(true)
+			widget:emit_signal_recursive("wrap::show")
 		end
 	end
 
@@ -165,18 +167,6 @@ local function worker(user_args)
 				.. cur_title
 		end)
 	end
-
-	local rounded_widget = wibox.widget({
-		{
-			spotify_widget,
-			left = 5,
-			right = 5,
-			widget = wibox.container.margin,
-		},
-		bg = beautiful.bg_normal,
-		shape = gears.shape.rounded_rect,
-		widget = wibox.container.background,
-	})
 
 	return spotify_widget
 end

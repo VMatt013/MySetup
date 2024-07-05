@@ -35,6 +35,7 @@ local function create(s, max_width)
 		buttons = tasklist_buttons,
 		style = {
 			shape = gears.shape.rounded_bar,
+			oppacity = 0,
 		},
 		layout = {
 			spacing = 5,
@@ -68,11 +69,37 @@ local function create(s, max_width)
 			widget = wibox.container.margin,
 			top = 2,
 			bottom = 2,
-			update_callback = function(self, c, index, clients) end,
 		},
 	})
 
 	local tasklist_constraint = wibox.container.constraint(tasklist_widget, "max", max_width)
+	local function update_tasklist_visibility()
+		local clients = awful.screen.focused().clients
+		local visible_clients = 0
+		for _, c in pairs(clients) do
+			if c.first_tag.selected then
+				visible_clients = visible_clients + 1
+			end
+		end
+
+		if visible_clients > 0 then
+			tasklist_widget:emit_signal_recursive("wrap::show")
+		else
+			tasklist_widget:emit_signal_recursive("wrap::hide")
+		end
+	end
+
+	-- Connect to client signals to update the visibility
+	client.connect_signal("manage", update_tasklist_visibility)
+	client.connect_signal("unmanage", update_tasklist_visibility)
+	client.connect_signal("tagged", update_tasklist_visibility)
+	client.connect_signal("untagged", update_tasklist_visibility)
+
+	-- Connect to tag signals to update the visibility
+	tag.connect_signal("property::selected", update_tasklist_visibility)
+
+	-- Initial check
+	update_tasklist_visibility()
 
 	return tasklist_constraint
 end

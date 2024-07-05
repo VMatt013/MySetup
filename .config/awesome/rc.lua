@@ -30,6 +30,8 @@ local rounded = theme.rects.rounded
 
 local promptbox = require("widgets.promptbox")
 
+local logout_popup = require("widgets.logout-menu.popup")
+
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
 -- another config (This code will only ever execute for the fallback config)
@@ -128,7 +130,7 @@ globalkeys = gears.table.join(
 	awful.key({ modkey }, "s", hotkeys_popup.show_help, { description = "show help", group = "awesome" }),
 	awful.key({ modkey }, "Left", awful.tag.viewprev, { description = "view previous", group = "tag" }),
 	awful.key({ modkey }, "Right", awful.tag.viewnext, { description = "view next", group = "tag" }),
-	awful.key({ modkey }, "Escape", awful.tag.history.restore, { description = "go back", group = "tag" }),
+	--awful.key({ modkey }, "Escape", awful.tag.history.restore, { description = "go back", group = "tag" }),
 
 	awful.key({ modkey }, "j", function()
 		awful.client.focus.byidx(1)
@@ -162,6 +164,10 @@ globalkeys = gears.table.join(
 	end, { description = "go back", group = "client" }),
 
 	-- Standard program
+
+	awful.key({ modkey }, "Escape", function()
+		logout_popup:toggle()
+	end, { description = "open a rofi drun", group = "launcher" }),
 	awful.key({ modkey, "Shift" }, "s", function()
 		awful.spawn("spectacle -r")
 	end, { description = "open spectacle region", group = "launcher" }),
@@ -227,7 +233,7 @@ globalkeys = gears.table.join(
 
 	-- Prompt
 	awful.key({ modkey }, "r", function()
-		awful.screen.focused().promptbox:run()
+		awful.screen.focused().promptbox:run({})
 	end, { description = "run prompt", group = "launcher" }),
 
 	awful.key({ modkey }, "x", function()

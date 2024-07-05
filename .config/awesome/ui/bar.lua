@@ -5,17 +5,15 @@ local theme = require("theme.bar-test")
 
 ---------------------
 -- Widgets------------
----------------------
-local beautiful = require("beautiful")
+--------------------
 local promptbox = require("widgets.promptbox")
 local clock = wibox.widget.textclock()
 local battery_widget = require("widgets.battery-status.battery")
-local logout_menu = require("widgets.logout-menu.logout-menu")
+local logout_menu = require("widgets.logout-menu")
 local volume_widget = require("widgets.pactl.volume")
 local spotify_widget = require("widgets.spotify")
 local my_systray = wibox.widget.systray()
 local margin = require("widgets.margin")
-local test = require("widgets.testwidget")
 
 awful.screen.connect_for_each_screen(function(s)
 	awful.tag({ "1", "2", "3" }, s, awful.layout.layouts[1])
@@ -44,8 +42,7 @@ awful.screen.connect_for_each_screen(function(s)
 			expand = "none",
 			{ -- Left widgets
 				layout = wibox.layout.fixed.horizontal,
-				margin(logout_menu(), true, _, _, _, 10),
-				--margin(test, true),
+				margin(logout_menu, true, _, _, _, 10),
 				margin(s.taglist),
 				margin(spotify_widget({ max_length = 40 }), true),
 				margin(promptbox, true),
@@ -68,7 +65,6 @@ awful.screen.connect_for_each_screen(function(s)
 				layout = wibox.layout.fixed.horizontal,
 				margin(s.taglist),
 				margin(spotify_widget({ max_length = 40 }), true),
-				margin(promptbox),
 			},
 			-- Middle widget
 			margin(s.tasklist, true),

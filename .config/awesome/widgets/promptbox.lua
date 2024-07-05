@@ -1,7 +1,13 @@
 local awful = require("awful")
+local Debug = require("Debug")
+local prompt_widget = awful.widget.prompt({
+	prompt = "Run: ",
+})
 
-local worker = {}
+local original_run = prompt_widget.run
+prompt_widget.run = function(...)
+	prompt_widget:emit_signal_recursive("wrap::show")
+	original_run(...)
+end
 
-worker.widget = awful.widget.prompt()
-
-return worker.widget
+return prompt_widget

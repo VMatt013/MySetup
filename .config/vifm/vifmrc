@@ -138,6 +138,7 @@ command! vgrep vim "+grep %a"
 command! reload :write | restart
 command! mkd :mkdir %a
 command! mkf :touch %a
+command open :!xdg-open %f
 
 command! gadd git add %f
 command! greset git reset %f
