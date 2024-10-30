@@ -3,14 +3,13 @@ local wibox = require("wibox")
 local gears = require("gears")
 local beautiful = require("beautiful")
 
-local HOME = os.getenv("HOME")
-local ICON_DIR = HOME .. "/.config/awesome/widgets/logout-menu/icons/"
+local ICON_DIR = require("icons")
 
 local widget = wibox.widget({
 	{
 
 		{
-			image = ICON_DIR .. "power_w.svg",
+			image = ICON_DIR .. "power.svg",
 			resize = true,
 			widget = wibox.widget.imagebox,
 		},
@@ -27,9 +26,5 @@ local widget = wibox.widget({
 	widget = wibox.container.background,
 	layout = wibox.layout.fixed.horizontal,
 })
-
-widget:buttons(awful.util.table.join(awful.button({}, 1, function()
-	toggle(popup)
-end)))
 
 return widget

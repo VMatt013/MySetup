@@ -2,36 +2,33 @@
 -- found (e.g. lgi). If LuaRocks is not installed, do nothing.
 pcall(require, "luarocks.loader")
 
+local HOME = os.getenv("HOME")
+local DIR = HOME .. "/.config/awesome/"
+
 local beautiful = require("beautiful")
+beautiful.init(DIR .. "theme/" .. "default/theme.lua")
+
 local gears = require("gears")
 local awful = require("awful")
 require("awful.autofocus")
 local wibox = require("wibox")
-local beautiful = require("beautiful")
 local naughty = require("naughty")
 local menubar = require("menubar")
 local hotkeys_popup = require("awful.hotkeys_popup")
+
+local utils_volume = require("utils.volume")
+utils_volume:get_system_volume()
+local logout_popup = require("popups.logout-menu")
+local brightness_popup = require("popups.brightness")
 require("awful.hotkeys_popup.keys")
 
 local Debug = require("Debug")
 
-local HOME = os.getenv("HOME")
-local DIR = HOME .. "/.config/awesome/"
-
-beautiful.init(DIR .. "theme/" .. "default/theme.lua")
---beautiful.init("theme.main")
-
 local margin = wibox.container.margin
 
--- Theme
-local theme = require("theme.bar-test")
-local colors = theme.colors
-local rounded = theme.rects.rounded
+local keyboard = require("widgets.keyboard")
 
-local promptbox = require("widgets.promptbox")
-
-local logout_popup = require("widgets.logout-menu.popup")
-
+-- helpers
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
 -- another config (This code will only ever execute for the fallback config)
@@ -64,7 +61,6 @@ end
 -- }}}
 
 -- {{{ Variable definitions
--- Themes define colours, icons, font and wallpapers.
 
 -- This is used later as the default terminal and editor to run.
 terminal = "alacritty"
@@ -88,19 +84,15 @@ menubar.utils.terminal = terminal -- Set the terminal for applications that requ
 -- }}}
 
 -- {{{ Wibar
-
-local bar = require("ui.bar")
---for k, v in pairs(awful.screen.object) do Debug(k, v) end
-
-Debug(_, _, screen._viewports(), 1)
+require("ui.bar")
 
 local function set_wallpaper(s)
 	-- Wallpaper
 	--gears.wallpaper.maximized("/home/matt/wallpapers/eva.jpg", s)
-	if theme.wallpapers then
+	if beautiful.wallpapers then
 		--gears.wallpaper.maximized(wallpaper, s, true)
 		for s = 1, screen.count() do
-			gears.wallpaper.maximized(theme.wallpapers[s], s)
+			gears.wallpaper.maximized(beautiful.wallpapers[s], s)
 		end
 		--		gears.wallpaper.maximized(theme.wallpapers[1], s)
 	end
@@ -167,10 +159,17 @@ globalkeys = gears.table.join(
 
 	awful.key({ modkey }, "Escape", function()
 		logout_popup:toggle()
-	end, { description = "open a rofi drun", group = "launcher" }),
+	end, { description = "open a logout menu", group = "launcher" }),
+
 	awful.key({ modkey, "Shift" }, "s", function()
 		awful.spawn("spectacle -r")
 	end, { description = "open spectacle region", group = "launcher" }),
+
+	awful.key({ modkey }, "b", function()
+		awful.spawn("zenbrowser")
+		local screen = awful.screen.focused()
+		screen.tags[3]:view_only()
+	end, { description = "open browser", group = "launcher" }),
 
 	awful.key({ "Mod1" }, "space", function()
 		awful.spawn("rofi -show drun")
@@ -205,19 +204,24 @@ globalkeys = gears.table.join(
 	awful.key({ modkey, "Shift" }, "space", function()
 		awful.layout.inc(-1)
 	end, { description = "select previous", group = "layout" }),
+	awful.key({ modkey }, "q", function()
+		keyboard:cycle_layout()
+	end, { description = "change keyboard layout", group = "awesome" }),
 
 	-- FN keys
 	awful.key({}, "#232", function()
-		awful.spawn("light -U 1")
+		brightness_popup:down()
 	end, { description = "brightness down", group = "fn keys" }),
 	awful.key({}, "#233", function()
-		awful.spawn("light -A 1")
+		brightness_popup:up()
 	end, { description = "brightness up", group = "fn keys" }),
 	awful.key({}, "#122", function()
-		awful.spawn("amixer set 'Master' 5%-")
+		--volume_popup:down()
+		utils_volume:down()
 	end, { description = "volume down", group = "fn keys" }),
 	awful.key({}, "#123", function()
-		awful.spawn("amixer set 'Master' 5%+")
+		utils_volume:up()
+		--volume_popup:up()
 	end, { description = "volume up", group = "fn keys" }),
 	awful.key({}, "#172", function()
 		awful.spawn("playerctl play-pause")
@@ -292,7 +296,8 @@ clientkeys = gears.table.join(
 -- Bind all key numbers to tags.
 -- Be careful: we use keycodes to make it work on any keyboard layout.
 -- This should map on the top row of your keyboard, usually 1 to 9.
-for i = 1, 3 do
+
+for i = 1, #awful.screen.focused().tags do
 	globalkeys = gears.table.join(
 		globalkeys,
 		-- View tag only.
@@ -357,14 +362,12 @@ awful.rules.rules = {
 	{
 		rule = {},
 		properties = {
-			border_width = beautiful.border_width,
-			border_color = beautiful.border_color_normal,
 			focus = awful.client.focus.filter,
 			raise = true,
 			keys = clientkeys,
 			buttons = clientbuttons,
 			screen = awful.screen.preferred,
-			shape = theme.rects.rounded(theme.dpi),
+			shape = beautiful.shape.rounded_rect(beautiful.dpi),
 			placement = awful.placement.no_overlap + awful.placement.no_offscreen,
 		},
 	},
@@ -398,18 +401,19 @@ awful.rules.rules = {
 			role = {
 				"AlarmWindow", -- Thunderbird's calendar.
 				"ConfigManager", -- Thunderbird's about:config.
-				"pop-up", -- e.g. Google Chrome's (detached) Developer Tools.
+				--"pop-up", -- e.g. Google Chrome's (detached) Developer Tools.
 			},
 		},
 		properties = { floating = true },
 	},
 
 	-- Add titlebars to normal clients and dialogs
-	{ rule_any = { type = { "normal", "dialog" } }, properties = { titlebars_enabled = true } },
+	{ rule_any = { type = { "normal", "dialog" } }, properties = { titlebars_enabled = false } },
 
 	-- Set Firefox to always map on the tag named "2" on screen 1.
-	-- { rule = { class = "Firefox" },
-	--   properties = { screen = 1, tag = "2" } },
+	{ rule = { class = "Zen Browser" }, properties = { screen = 1, tag = "3" } },
+
+	-- Add this to your rules section
 }
 -- }}}
 
@@ -419,9 +423,10 @@ function setShape(c)
 	if c.fullscreen or c.maximized then
 		c.shape = gears.shape.rectangle
 	else
-		c.shape = rounded(theme.dpi)
+		c.shape = beautiful.shape.rounded_rect(beautiful.dpi)
 	end
 end
+
 client.connect_signal("property::fullscreen", function(c)
 	setShape(c)
 end)
@@ -457,9 +462,9 @@ client.connect_signal("request::titlebars", function(c)
 
 	awful
 		.titlebar(c, {
-			size = theme.titlebar.size,
-			bg_normal = theme.titlebar.bg_normal,
-			bg_focus = theme.titlebar.bg_focus,
+			size = beautiful.titlebar_size,
+			bg_normal = beautiful.colors.secondary,
+			bg_focus = beautiful.colors.main,
 		})
 		:setup({
 			{ -- Left
@@ -492,12 +497,6 @@ client.connect_signal("mouse::enter", function(c)
 	c:emit_signal("request::activate", "mouse_enter", { raise = false })
 end)
 
-client.connect_signal("focus", function(c)
-	c.border_color = theme.colors.main
-end)
-client.connect_signal("unfocus", function(c)
-	c.border_color = theme.colors.border
-end)
 -- }}}
 
 awful.spawn.with_shell("~/.config/awesome/startup.sh")

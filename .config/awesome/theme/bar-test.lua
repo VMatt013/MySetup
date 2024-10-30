@@ -45,7 +45,7 @@ theme.bar = {
 	height = 25,
 	margins = {
 		top = 0,
-		bottom = 2,
+		bottom = 0,
 		left = 0,
 		right = 0,
 	},

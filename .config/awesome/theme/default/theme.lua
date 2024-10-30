@@ -6,14 +6,26 @@ local theme_assets = require("beautiful.theme_assets")
 local xresources = require("beautiful.xresources")
 local rnotification = require("ruled.notification")
 local dpi = xresources.apply_dpi
+local gears = require("gears")
 
 local gfs = require("gears.filesystem")
 local themes_path = gfs.get_themes_dir()
 
 local theme = {}
 
---theme.font = "sans 8"
 theme.font = "Hack Nerd Font 9"
+
+local colorscheme = ""
+
+local status, colors = pcall(require, "theme." .. colorscheme)
+if status then
+	theme.colors = colors
+else
+	theme.colors = {}
+
+	theme.colors.main = "#811d5888"
+	theme.colors.secondary = "#000000"
+end
 
 theme.bg_normal = "#222222"
 theme.bg_focus = "#535d6c"
@@ -28,12 +40,17 @@ theme.fg_minimize = "#ffffff"
 
 theme.useless_gap = 10
 theme.border_width = 2
-theme.border_color_normal = "#000000"
-theme.border_color_active = "#535d6c"
+theme.border_color_normal = theme.colors.secondary
+theme.border_color_active = theme.colors.main
 theme.border_color_marked = "#91231c"
 
+theme.dpi = 10
+
+theme.titlebar_bg_focus = theme.colors.main
+theme.titlebar_bg_normal = theme.colors.secondary
+
 --theme.tasklist_bg_focus = "#34eb40"
-theme.tasklist_bg_normal = "#525151"
+--theme.tasklist_bg_normal = "#525151"
 --theme.tasklist_fg_focus = "#34eb40"
 --theme.tasklist_fg_normal = "#34eb40"
 
@@ -99,6 +116,8 @@ theme.titlebar_maximized_button_focus_inactive = themes_path .. "default/titleba
 theme.titlebar_maximized_button_normal_active = themes_path .. "default/titlebar/maximized_normal_active.png"
 theme.titlebar_maximized_button_focus_active = themes_path .. "default/titlebar/maximized_focus_active.png"
 
+theme.titlebar_size = dpi(25)
+
 theme.wallpaper = themes_path .. "default/background.png"
 
 -- You can use your own layout icons like this:
@@ -118,6 +137,33 @@ theme.layout_cornernw = themes_path .. "default/layouts/cornernww.png"
 theme.layout_cornerne = themes_path .. "default/layouts/cornernew.png"
 theme.layout_cornersw = themes_path .. "default/layouts/cornersww.png"
 theme.layout_cornerse = themes_path .. "default/layouts/cornersew.png"
+
+theme.shape = {}
+
+theme.shape.rounded_rect = function(dp)
+	local dp = dp or 10
+	return function(cr, width, height)
+		gears.shape.rounded_rect(cr, width, height, dp)
+	end
+end
+theme.shape.rect = function()
+	return function(cr, width, height)
+		gears.shape.rectangle(cr, width, height)
+	end
+end
+
+theme.bar = {}
+
+theme.bar.border_width = 3
+--theme.bar.border_color = "#000000"
+theme.bar.position = "top"
+theme.bar.height = 25
+theme.bar.margins = { top = 0, bottom = 0, left = 0, right = 0 }
+--theme.bar.bg = "#811d5888"
+theme.bar.fg = "#ffffff"
+theme.bar.shape = theme.shape.rect()
+
+theme.wallpapers = { "/home/matt/wallpapers/eclipse.jpg", "/home/matt/wallpapers/eva.jpg" }
 
 -- Generate Awesome icon:
 theme.awesome_icon = theme_assets.awesome_icon(theme.menu_height, theme.bg_focus, theme.fg_focus)

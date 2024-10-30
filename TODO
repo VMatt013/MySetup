@@ -1,5 +1,6 @@
 awesome:
-	- logout-menu(rebbot to windows)
 	- hide prompt
 	- systray
 	- arc sound & / | battery
+	- zoxide in vifmm
+	- bluelight filter

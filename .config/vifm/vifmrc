@@ -143,16 +143,20 @@ command open :!xdg-open %f
 command! gadd git add %f
 command! greset git reset %f
 command! gcommit git commit -m %a
+command! gpull git pull
+command! gpush git push
 command! gswitch git switch %a
 command! gstatus :setl previewprg='git status -s %d 2>&1' | :view!
 command! glog :setl previewprg='git log --color --oneline --all --graph %d 2>&1' | :view!
 command! gdiff :setl previewprg='git diff %d 2>&1' | :view!
+
 
 command! Gstatus git status | nvim -R
 command! Glog git log | nvim -R
 
 command! cc cp %c %a
 
+command! cim xclip -selection clipboard -t image/png -i %f 
 
 "au DirEnter '~/Documents/Git/**/*' setl previewprg='git status %d 2>&1'
 " ------------------------------------------------------------------------------
