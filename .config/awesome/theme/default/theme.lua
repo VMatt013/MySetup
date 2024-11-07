@@ -48,6 +48,8 @@ theme.dpi = 10
 
 theme.titlebar_bg_focus = theme.colors.main
 theme.titlebar_bg_normal = theme.colors.secondary
+theme.titlebars_enable = false
+theme.titlebar_size = dpi(10)
 
 --theme.tasklist_bg_focus = "#34eb40"
 --theme.tasklist_bg_normal = "#525151"
@@ -115,8 +117,6 @@ theme.titlebar_maximized_button_normal_inactive = themes_path .. "default/titleb
 theme.titlebar_maximized_button_focus_inactive = themes_path .. "default/titlebar/maximized_focus_inactive.png"
 theme.titlebar_maximized_button_normal_active = themes_path .. "default/titlebar/maximized_normal_active.png"
 theme.titlebar_maximized_button_focus_active = themes_path .. "default/titlebar/maximized_focus_active.png"
-
-theme.titlebar_size = dpi(25)
 
 theme.wallpaper = themes_path .. "default/background.png"
 

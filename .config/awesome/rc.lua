@@ -408,11 +408,26 @@ awful.rules.rules = {
 	},
 
 	-- Add titlebars to normal clients and dialogs
-	{ rule_any = { type = { "normal", "dialog" } }, properties = { titlebars_enabled = false } },
+	{ rule_any = { type = { "normal", "dialog" } }, properties = { titlebars_enabled = beautiful.titlebars_enable } },
 
 	-- Set Firefox to always map on the tag named "2" on screen 1.
 	{ rule = { class = "Zen Browser" }, properties = { screen = 1, tag = "3" } },
 
+	{
+		rule = { class = "zen-alpha", role = "PictureInPicture" },
+		properties = {
+			floating = true,
+			titlebars_enabled = true,
+		},
+	},
+	{
+		rule = { class = "scrcpy" },
+		properties = {
+			floating = true,
+			titlebars_enabled = true,
+			sticky = true,
+		},
+	},
 	-- Add this to your rules section
 }
 -- }}}
