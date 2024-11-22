@@ -140,16 +140,17 @@ command! mkd :mkdir %a
 command! mkf :touch %a
 command open :!xdg-open %f
 
+command! gclone git clone https://github.com/%a
 command! gadd git add %f
 command! greset git reset %f
 command! gcommit git commit -m %a
 command! gpull git pull
+command! gpullm git pull origin main
 command! gpush git push
 command! gswitch git switch %a
 command! gstatus :setl previewprg='git status -s %d 2>&1' | :view!
 command! glog :setl previewprg='git log --color --oneline --all --graph %d 2>&1' | :view!
 command! gdiff :setl previewprg='git diff %d 2>&1' | :view!
-
 
 command! Gstatus git status | nvim -R
 command! Glog git log | nvim -R
