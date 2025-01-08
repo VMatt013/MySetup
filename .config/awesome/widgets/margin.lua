@@ -1,9 +1,6 @@
-local awful = require("awful")
 local wibox = require("wibox")
 local gears = require("gears")
 local beautiful = require("beautiful")
-
-local Debug = require("Debug")
 
 local wrapper = function(widget)
 	local wrap = wibox.widget({

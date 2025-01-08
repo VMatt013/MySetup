@@ -1,7 +1,14 @@
+-------------------------------------------------
+-- Blue Light Filter Widget for Awesome Window Manager
+-- More details could be found here:
+-- https://github.com/streetturtle/awesome-wm-widgets/tree/master/github-prs-widget
+
+-- @author VMatt
+-- @copyright 2024 VMatt
+-------------------------------------------------
+
 local awful = require("awful")
 local wibox = require("wibox")
-local gears = require("gears")
-local beautiful = require("beautiful")
 
 local ICON_DIR = require("icons")
 local CMD = "redshift"

@@ -13,6 +13,7 @@ run "picom" &
 run "kdeconnect-indicator"
 run "nm-applet"
 run "blueman-applet"
+run "1password" --silent
 #run "nitrogen" --restore &
 # run "xautolock -time 10 -locker "awesome-client 'awesome.quit()'" "
 # run "" &

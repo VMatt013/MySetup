@@ -9,8 +9,8 @@ local gears = require("gears")
 --------------------
 local promptbox = require("widgets.promptbox")
 local clock = wibox.widget.textclock()
-local battery_widget = require("widgets.battery-status.battery")
 local battery_arc = require("widgets.battery-status.arc")
+local kde_battery = require("widgets.kde-battery.arc")
 local logout_menu = require("widgets.logout-menu")
 local volume_widget = require("widgets.pactl.volume")
 local spotify_widget = require("widgets.spotify")
@@ -18,7 +18,6 @@ local my_systray = wibox.widget.systray()
 local keyboard = require("widgets.keyboard")
 local margin = require("widgets.margin")
 local bluelight = require("widgets.bluelight")
-local volume = require("widgets.volume")
 
 awful.screen.connect_for_each_screen(function(s)
 	awful.tag({ "1", "2", "3", "4", "5" }, s, awful.layout.layouts[1])
@@ -57,11 +56,11 @@ awful.screen.connect_for_each_screen(function(s)
 			{ -- Right widgets
 				layout = wibox.layout.fixed.horizontal,
 				margin(keyboard, true),
+				bluelight,
 				margin(my_systray, true),
-				--margin(battery_widget()),
+				margin(kde_battery({ device_id = "502889c4_a2e6_4813_afc4_99dc2069a45b", max_charge = 81 })),
 				margin(battery_arc()),
 				margin(volume_widget()),
-				--margin(volume),
 				margin(clock),
 			},
 		})
@@ -78,7 +77,7 @@ awful.screen.connect_for_each_screen(function(s)
 			margin(s.tasklist, true),
 			{ -- Right widgets
 				layout = wibox.layout.fixed.horizontal,
-				margin(battery_widget()),
+				margin(battery_arc()),
 				margin(clock),
 			},
 		})
