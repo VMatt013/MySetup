@@ -113,12 +113,13 @@ end)
 
 -- {{{ Mouse bindings
 root.buttons(gears.table.join(awful.button({}, 3, function()
-	mymainmenu:toggle()
+	--mymainmenu:toggle()
 end)))
 -- }}}
 
 -- {{{ Key bindings
 globalkeys = gears.table.join(
+
 	awful.key({ modkey }, "s", hotkeys_popup.show_help, { description = "show help", group = "awesome" }),
 	awful.key({ modkey }, "Left", awful.tag.viewprev, { description = "view previous", group = "tag" }),
 	awful.key({ modkey }, "Right", awful.tag.viewnext, { description = "view next", group = "tag" }),
@@ -131,7 +132,7 @@ globalkeys = gears.table.join(
 		awful.client.focus.byidx(-1)
 	end, { description = "focus previous by index", group = "client" }),
 	awful.key({ modkey }, "w", function()
-		mymainmenu:show()
+		--mymainmenu:show()
 	end, { description = "show main menu", group = "awesome" }),
 
 	-- Layout manipulation
@@ -410,11 +411,10 @@ awful.rules.rules = {
 	-- Add titlebars to normal clients and dialogs
 	{ rule_any = { type = { "normal", "dialog" } }, properties = { titlebars_enabled = beautiful.titlebars_enable } },
 
-	-- Set Firefox to always map on the tag named "2" on screen 1.
 	{ rule = { class = "Zen Browser" }, properties = { screen = 1, tag = "3" } },
 
 	{
-		rule = { class = "zen-alpha", role = "PictureInPicture" },
+		rule = { instance = "Toolkit", role = "PictureInPicture" },
 		properties = {
 			floating = true,
 			titlebars_enabled = true,

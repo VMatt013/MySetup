@@ -11,6 +11,7 @@ local promptbox = require("widgets.promptbox")
 local clock = wibox.widget.textclock()
 local battery_arc = require("widgets.battery-status.arc")
 local kde_battery = require("widgets.kde-battery.arc")
+local headphone_battery = require("widgets.headphone-battery")
 local logout_menu = require("widgets.logout-menu")
 local volume_widget = require("widgets.pactl.volume")
 local spotify_widget = require("widgets.spotify")
@@ -56,8 +57,8 @@ awful.screen.connect_for_each_screen(function(s)
 			{ -- Right widgets
 				layout = wibox.layout.fixed.horizontal,
 				margin(keyboard, true),
-				bluelight,
 				margin(my_systray, true),
+				--margin(headphone_battery()),
 				margin(kde_battery({ device_id = "502889c4_a2e6_4813_afc4_99dc2069a45b", max_charge = 81 })),
 				margin(battery_arc()),
 				margin(volume_widget()),
